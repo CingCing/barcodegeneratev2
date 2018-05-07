@@ -4,6 +4,10 @@ public class UserInfo {
 	private String userName;
 	private String password;
 	
+	 public UserInfo()  {
+	        
+	 }
+	 
 	//Khong thay doi constructor nay, no duoc su dung trong hibernate query
 	public UserInfo(String userName, String password) {
 		this.userName = userName;

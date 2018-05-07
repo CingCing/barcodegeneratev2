@@ -20,9 +20,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
 		// cac user trong bo nho
-		auth.inMemoryAuthentication().withUser("admin").password("admin");
-		auth.inMemoryAuthentication().withUser("pleb").password("1234");
+		auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN","USER");
+		auth.inMemoryAuthentication().withUser("pleb").password("123456").roles("USER");
 		
+		//cac user trong database
 		auth.userDetailsService(myUserDetailsService);
 	}
 	
@@ -50,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// Submit URL của trang login
 				.loginProcessingUrl("/j_spring_security_check") // Submit URL
 				.loginPage("/login")//
-				.defaultSuccessUrl("/userInfo")//
+				.defaultSuccessUrl("/welcome")//
 				.failureUrl("/login?error=true")//
 				.usernameParameter("username")//
 				.passwordParameter("password")

@@ -6,6 +6,7 @@ import javax.sql.DataSource;
  
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
+import org.project.barcodegeneratev2.dao.QrTextDAO;
 import org.project.barcodegeneratev2.dao.UserInfoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +43,7 @@ public class ApplicationContextConfig {
 		return rb;
 	}
 	
-	@Bean(name = "viewResource")
+	@Bean(name = "viewResolver")
 	public InternalResourceViewResolver getViewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 		viewResolver.setPrefix("/WEB-INF/pages/");
@@ -64,31 +65,45 @@ public class ApplicationContextConfig {
 	}
 	
 	@Autowired
-	  @Bean(name = "sessionFactory")
-	  public SessionFactory getSessionFactory(DataSource dataSource) throws Exception {
-	      Properties properties = new Properties();
-	 
-	      // Xem: ds-hibernate-cfg.properties
-	      properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
-	      properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-	      properties.put("current_session_context_class", env.getProperty("current_session_context_class"));
-	      
-	 
-	      LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-	      factoryBean.setPackagesToScan(new String[] { "org.o7planning.springmvcforms.entity" });
-	      factoryBean.setDataSource(dataSource);
-	      factoryBean.setHibernateProperties(properties);
-	      factoryBean.afterPropertiesSet();
-	      //
-	      SessionFactory sf = factoryBean.getObject();
-	      return sf;
-	  }
+	@Bean(name = "sessionFactory")
+	public SessionFactory getSessionFactory(DataSource dataSource) throws Exception {
+		System.out.println("## getSessionFactory .... ");
+		try {
+			Properties properties = new Properties();
+
+			// Xem: ds-hibernate-cfg.properties
+			properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+			properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+			properties.put("current_session_context_class", env.getProperty("current_session_context_class"));
+
+			LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
+
+			// Package contain entity classes
+			// Package chứa các entity class.
+			factoryBean.setPackagesToScan(new String[] { "org.project.barcodegeneratev2.entity" });
+			factoryBean.setDataSource(dataSource);
+			factoryBean.setHibernateProperties(properties);
+			factoryBean.afterPropertiesSet();
+			//
+			SessionFactory sf = factoryBean.getObject();
+			System.out.println("## getSessionFactory: " + sf);
+			return sf;
+		} catch (Exception e) {
+			System.out.println("Error getSessionFactory: " + e);
+			e.printStackTrace();
+			throw e;
+		}
+	}
 	 
 	  @Autowired
 	  @Bean(name = "transactionManager")
 	  public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
 	      HibernateTransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
-	 
 	      return transactionManager;
+	  }
+	  
+	  @Bean(name = "QrTextDAO")
+	  public QrTextDAO getQrTextDAO() {
+		  return new QrTextDAO();
 	  }
 }

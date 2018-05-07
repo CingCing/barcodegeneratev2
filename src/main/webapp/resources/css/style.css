@@ -68,3 +68,9 @@ input[type=submit]:hover {
         margin-top: 0;
     }
 }
+.message  {
+        font-size:90%;
+        color:blue;
+        font-style:italic;
+        margin-top:30px;
+   }
