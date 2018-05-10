@@ -1,10 +1,15 @@
 package org.project.barcodegeneratev2.model;
 
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 public class QrTextInfo {
 	
 	private String username;
 	private String context;
 
+	// Upload file.
+    private CommonsMultipartFile fileData;
+	
 	public QrTextInfo() {
 		
 	}
@@ -15,6 +20,15 @@ public class QrTextInfo {
 	    this.username = username;
 	    this.context = context;
 	}
+	
+	public CommonsMultipartFile getFileData() {
+		return fileData;
+	}
+
+	public void setFileData(CommonsMultipartFile fileData) {
+		this.fileData = fileData;
+	}
+
 	
 	public String getUsername() {
 		return username;

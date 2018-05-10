@@ -18,6 +18,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 
@@ -94,16 +95,27 @@ public class ApplicationContextConfig {
 			throw e;
 		}
 	}
-	 
-	  @Autowired
-	  @Bean(name = "transactionManager")
-	  public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
-	      HibernateTransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
-	      return transactionManager;
-	  }
-	  
-	  @Bean(name = "QrTextDAO")
-	  public QrTextDAO getQrTextDAO() {
-		  return new QrTextDAO();
-	  }
+	
+	// Cấu hình để Upload.
+	@Bean(name = "multipartResolver")
+	public CommonsMultipartResolver multipartResolver() {
+		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+
+		// Set Max Size 1MB
+		commonsMultipartResolver.setMaxUploadSize(1 * 1024 * 1024);
+
+		return commonsMultipartResolver;
+	}
+	
+	@Autowired
+	@Bean(name = "transactionManager")
+	public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
+		return transactionManager;
+	}
+
+	@Bean(name = "QrTextDAO")
+	public QrTextDAO getQrTextDAO() {
+		return new QrTextDAO();
+	}
 }

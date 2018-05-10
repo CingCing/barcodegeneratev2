@@ -1,5 +1,6 @@
 <%@page session="false"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,7 +15,7 @@
 <div class="container">
 	<div class="w-100">
 	<div class="container col-md-10">
-  		<form action="welcome" method="post">
+  		<form:form modelAttribute="qrcodeForm" action="welcome" method="POST" enctype="multipart/form-data">
     		<div class="row">
       			<div class="col-md-3" style="margin-top: 6px;">
         			<label >Enter text to create QR Code:</label>
@@ -38,7 +39,7 @@
       			</div>
       			<div class="col-md-9" style="margin-top: 6px;">
         			<div class= row>        				
-        				<input type="file" name="file" />
+        				<input type="file" name="fileData" path="fileData" />
         			</div>
       			</div>      			
     		</div>   
@@ -47,12 +48,12 @@
     		<div class="row">
       			<input type="submit" style="margin-right:14px" value="Create QR code">
     		</div>
-  		</form>
+  		</form:form>
 	</div>
 	<div class="container col-md-2 text-center">
 		<!-- <img src="resources/image/zxc.png" style="width:175px; height:175px"> -->
 		<c:if test="${empty input }">
-			<img src="resources/image/monkas.png" style="width:175px; height:175px">
+			<img src="resources/image/helloworld.png" style="width:175px; height:175px">
 		</c:if>
 		<c:if test="${not empty input }">
 			<img src="data:image/png;base64,${output }" style="width:175px; height:175px">

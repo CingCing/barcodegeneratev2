@@ -2,6 +2,7 @@ package org.project.barcodegeneratev2.controller;
 
 import java.security.Principal;
 
+import org.project.barcodegeneratev2.model.QrTextInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -14,7 +15,8 @@ public class LoginController {
 	@RequestMapping(value = { "/", "/welcome" }, method = RequestMethod.GET)
 	   public String welcomePage(Model model) {
 	       model.addAttribute("title", "Welcome");
-	       model.addAttribute("message", "This is welcome page!");
+//	       QrTextInfo qrcodeForm = new QrTextInfo();
+//	       model.addAttribute("qrcodeForm", qrcodeForm);
 	       return "welcomePage";
 	   }
 	 

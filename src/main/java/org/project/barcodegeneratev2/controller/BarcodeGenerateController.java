@@ -1,16 +1,12 @@
 package org.project.barcodegeneratev2.controller;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.security.Principal;
 import java.util.Base64;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
 import org.project.barcodegeneratev2.dao.QrTextDAO;
 import org.project.barcodegeneratev2.model.QrTextInfo;
@@ -21,11 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.google.zxing.WriterException;
@@ -45,49 +40,33 @@ public class BarcodeGenerateController extends HttpServlet {
 	
 //	@Autowired
 //	private QrTextValidator qrTextValidator;
-//	
-//	@InitBinder
-//	protected void initBinder(WebDataBinder dataBinder) {
-//		//form target
-//		Object target = dataBinder.getTarget();
-//		if(target == null) {
-//			return;
-//		}
-//		System.out.println("target = " + target);
-//		if(target.getClass() == QrTextInfo.class) {
-//			dataBinder.setValidator(qrTextValidator);
-//		}
-//	}
 	
 	@RequestMapping(value = { "/", "/welcome" }, method = RequestMethod.POST)	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, @ModelAttribute QrTextInfo qrtextForm) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String context = request.getParameter("qrtext");
 		qrTextInfo.setContext(context);	
 		
-//		Part filePart = request.getPart("file"); // Retrieves <input type="file" name="file">
-//		String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-//		InputStream fileContent = filePart.getInputStream();
-//		System.out.println("xaxa " + filePart.getName());
-		
-		String Logo = "./src/main/webapp/resources/image/cmonbruh.png";
-		
+//		String Logo = "./src/main/webapp/resources/image/cmonbruh.png";
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = "guest";
 		if(auth.getName() != null) {			
 			username = auth.getName();
 		}		 
-		System.out.println("uesrname " + username);
 		qrTextInfo.setUsername(username);
 		
-		try {
-			byte[] out;
-//			if(fileName == null || fileName =="") {
-				out = QrcodeService.getQRCodeImage(context, 250,250);
-//			}else {
-//				out = QrcodeService.generateQRCodeImageOverlayWebData(context, 250, 250, Logo);
-//			}
-				
+		try {			
+			byte[] out = QrcodeService.getQRCodeImage(context, 250,250);
+			
+			if(qrtextForm.getFileData() != null) {
+				MultipartFile file = qrtextForm.getFileData();
+				if(!file.isEmpty()) {
+					byte[] imageByte = file.getBytes();
+					out = QrcodeService.generateQRCodeImageOverlayWebData(context, 250, 250, imageByte);
+				}				
+			}
+			
 			this.qrTextDAO.insertQrText(qrTextInfo);
 			
 			byte[] encodeBase64 = Base64.getEncoder().encode(out);

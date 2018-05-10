@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -88,7 +89,7 @@ public class QrcodeService {
 //        return pngData;
     }
 	
-	public static byte[] generateQRCodeImageOverlayWebData(String text, int width, int height, String Logo)
+	public static byte[] generateQRCodeImageOverlayWebData(String text, int width, int height, byte[] imageByte)
             throws WriterException, IOException {
 		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);		
@@ -102,7 +103,7 @@ public class QrcodeService {
         BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
         
         // Load logo image
-        BufferedImage overly = getOverlay(Logo);      
+        BufferedImage overly = getOverlayByte(imageByte);      
         //resize image if its big
         if(overly.getHeight() > 100 || overly.getWidth() >100) {
         	overly = resizeImage(overly);
@@ -137,6 +138,11 @@ public class QrcodeService {
 	private static BufferedImage getOverlay(String logoPath) throws IOException {
 		File path = new File(logoPath);
         return ImageIO.read(path);
+    }
+	
+	private static BufferedImage getOverlayByte(byte[] imageByte) throws IOException {
+		InputStream in = new ByteArrayInputStream(imageByte);
+        return ImageIO.read(in);
     }
 	
 	 private static BufferedImage resizeImage(BufferedImage originalImage){
