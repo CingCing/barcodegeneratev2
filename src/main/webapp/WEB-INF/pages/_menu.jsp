@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 <style>
 * {box-sizing: border-box;}
 
@@ -79,7 +79,7 @@
   <c:if test="${pageContext.request.userPrincipal.name == null}">
   
     
-     <a href="${pageContext.request.contextPath}/">Sign up</a>
+     <a href="${pageContext.request.contextPath}/signup">Sign up</a>
      
   </c:if>
   

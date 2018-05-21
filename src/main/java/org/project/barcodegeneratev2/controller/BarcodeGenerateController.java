@@ -41,10 +41,45 @@ public class BarcodeGenerateController extends HttpServlet {
 //	@Autowired
 //	private QrTextValidator qrTextValidator;
 	
-	@RequestMapping(value = { "/", "/welcome" }, method = RequestMethod.POST)	
+	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.POST)	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, @ModelAttribute QrTextInfo qrtextForm) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String context = request.getParameter("qrtext");
+		String context;
+		String url = request.getParameter("url");
+		String phone = request.getParameter("phone");
+		String msg = request.getParameter("msg");
+		String text = request.getParameter("text");
+		String email = request.getParameter("email");		
+		String dataType = request.getParameter("dataType");
+		String errorCorrection = request.getParameter("errorCorrection");
+		String barcodeType = request.getParameter("barcodeType");
+		String size = request.getParameter("size");
+		
+		int sizeConvert = Integer.parseInt(size); //convert string to int
+		char level = errorCorrection.charAt(0); // convert string to char
+		
+		
+		System.out.println("dataType: " + dataType);
+		System.out.println("errorCorrection: " + level);
+		System.out.println("barcodeType: " + barcodeType);
+		System.out.println("size: " + sizeConvert);
+		
+		System.out.println("url: " + url);
+		System.out.println("phone: " + phone);
+		System.out.println("msg: " + msg);
+		System.out.println("text: " + text);
+		System.out.println("email: " + email);
+		
+		switch(dataType) {
+		case "": context = text; break;
+		case "1": context = "mailto:" + email; break; //email
+		case "2": context = "tel:" + phone; break; //phone
+		case "3": context = "smsto:" + phone + ":" + msg; break; //sms
+		case "4": context = url; break; //url
+		default: context = text; break;
+		}
+		
+		System.out.println("context: " + context);
 		qrTextInfo.setContext(context);	
 		
 //		String Logo = "./src/main/webapp/resources/image/cmonbruh.png";
@@ -56,24 +91,29 @@ public class BarcodeGenerateController extends HttpServlet {
 		}		 
 		qrTextInfo.setUsername(username);
 		
-		try {			
-			byte[] out = QrcodeService.getQRCodeImage(context, 250,250);
+		try {		
+			byte[] out;
 			
-			if(qrtextForm.getFileData() != null) {
-				MultipartFile file = qrtextForm.getFileData();
-				if(!file.isEmpty()) {
-					byte[] imageByte = file.getBytes();
-					out = QrcodeService.generateQRCodeImageOverlayWebData(context, 250, 250, imageByte);
-				}				
-			}
+			if(barcodeType == "1d") {
+				out = QrcodeService.generateCode128(context, sizeConvert, sizeConvert);
+			}else {
+				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level);
+				if(qrtextForm.getFileData() != null) {
+					MultipartFile file = qrtextForm.getFileData();
+					if(!file.isEmpty()) {
+						byte[] imageByte = file.getBytes();
+						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte);
+					}				
+				}
+			}		
 			
-			this.qrTextDAO.insertQrText(qrTextInfo);
+//			this.qrTextDAO.insertQrText(qrTextInfo);
 			
 			byte[] encodeBase64 = Base64.getEncoder().encode(out);
 			String base64DataString = new String(encodeBase64 , "UTF-8");
 			request.setAttribute("output", base64DataString);
 			request.setAttribute("input", context);
-			request.getRequestDispatcher("WEB-INF/pages/welcomePage.jsp").forward(request, response);
+			request.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(request, response);
 		} catch (WriterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

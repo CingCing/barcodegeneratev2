@@ -38,6 +38,35 @@ public class QrcodeService {
 	    return pngData;
 	}
 	
+	public static byte[] generateCode128(String text, int width, int height) throws WriterException, IOException {
+	    QRCodeWriter qrCodeWriter = new QRCodeWriter();
+	    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.CODE_128, width, height);
+	    
+	    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+	    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+	    byte[] pngData = pngOutputStream.toByteArray(); 
+	    return pngData;
+	}
+	
+	public static byte[] generateQRCode(String text, int width, int height, char level) throws WriterException, IOException {
+		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
+		
+		switch(level) {
+		case 'L': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L); break;
+		case 'M': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); break;
+		case 'Q': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q); break;
+		case 'H': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); break;
+		}		
+		
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();	    
+	    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
+	    
+	    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+	    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+	    byte[] pngData = pngOutputStream.toByteArray(); 
+	    return pngData;
+	}
+	
 	public static void generateQRCodeImage(String text, int width, int height, String filePath)
             throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
