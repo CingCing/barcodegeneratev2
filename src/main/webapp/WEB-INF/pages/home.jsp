@@ -9,6 +9,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <title>QR Code Generator</title>
 <jsp:include page="_menu.jsp" />
+
+<!-- <script   type="text/javascript">
+	var app = angular.module('myApp', []);
+	app.controller('myCtrl', function($scope, $http){
+		$http.get('http://localhost:8080/BarcodeGenerateV2/home')
+		.then(function(response){
+			$scope.output = response.data;
+		});
+	});
+</script> -->
+
 </head>
 <body>	
 <div id="ui" ng-app="">
@@ -16,7 +27,7 @@
         <tbody>
         <tr>
             <td align="left" style="vertical-align: top;">
-  				<form:form modelAttribute="qrcodeForm" action="home" method="POST" enctype="multipart/form-data">
+  				<form:form modelAttribute="qrcodeForm" action="home" method="POST" enctype="multipart/form-data" >
                 <table id="leftpanel">
                     <colgroup>
                         <col>
@@ -70,17 +81,16 @@
                                 <tbody>
                                 <tr>
                                     <td class="firstColumn">Data type</td>
-                                    <td class="secondColumn"><select class="gwt-ListBox" ng-model="selectedContent" name="dataType">
+                                    <td class="secondColumn"><select class="gwt-ListBox" ng-model="selectedContent" id="dataType" name="dataType" ng-init="selectedContent = '${dataType }'">
                                         <!--<option value="Calendar event">Calendar event</option> -->
                                         <!--<option value="Contact information">Contact information</option>-->
 										<!-- <option value="">Please select data type </option> -->
 										<option value="">Text</option>
-                                        <option value="1">Email address</option>
+                                        <option value="1" >Email address</option>
                                        <!-- <option value="Geo location">Geo location</option> -->
-                                        <option value="2">Phone number</option>
-                                        <option value="3" >SMS</option>
-                                        
-                                        <option value="4">URL</option>
+                                        <option value="2" >Phone number</option>
+                                        <option value="3" >SMS</option>                                        
+                                        <option value="4" >URL</option>
                                         <!--<option value="Wifi network">Wifi network</option> -->
                                     </select></td>
                                 </tr>
@@ -132,19 +142,19 @@
                                 <tbody>
                                 <tr>
                                     <td class="firstColumn">Barcode size</td>
-                                    <td class="secondColumn"><select class="gwt-ListBox" name="size">
-                                        <option value="120">Small</option>
-                                        <option value="230">Medium</option>
-                                        <option value="350" selected>Large</option>
+                                    <td class="secondColumn"><select class="gwt-ListBox" name="size" id="size">
+                                        <option value="120" <c:if test="${size == '120'}">selected</c:if>>Small</option>
+                                        <option value="230" <c:if test="${empty size}">selected</c:if> <c:if test="${size == '230'}">selected</c:if>>Medium</option>
+                                        <option value="350" <c:if test="${size == '350'}">selected</c:if>>Large</option>
                                     </select></td>
                                 </tr>
                                 <tr ng-if="barcodeType != '1d'">
                                     <td class="firstColumn">Error correction</td>
-                                    <td class="secondColumn"><select class="gwt-ListBox" name="errorCorrection">
+                                    <td class="secondColumn"><select class="gwt-ListBox" name="errorCorrection" id ="errorCorrection">
                                         <option value="L">L</option>
-                                        <option value="M">M</option>
-                                        <option value="Q">Q</option>
-                                        <option value="H">H</option>
+                                        <option value="M" <c:if test="${errorCorrection == 'M'}">selected</c:if>>M</option>
+                                        <option value="Q" <c:if test="${errorCorrection == 'Q'}">selected</c:if>>Q</option>
+                                        <option value="H" <c:if test="${errorCorrection == 'H'}">selected</c:if>>H</option>
                                     </select></td>
                                 </tr>
                                 
@@ -181,10 +191,10 @@
                         <td align="left" style="vertical-align: top;">
                             <div id="imageresult">
                                 <div id="innerresult">
-                                	<c:if test="${empty input }">
+                                	<c:if test="${empty output }">
 										<img src="resources/image/helloworld.png" class="gwt-Image">
 									</c:if>
-									<c:if test="${not empty input }">
+									<c:if test="${not empty output }">
 										<img src="data:image/png;base64,${output }" class="gwt-Image">
 									</c:if>
                                 

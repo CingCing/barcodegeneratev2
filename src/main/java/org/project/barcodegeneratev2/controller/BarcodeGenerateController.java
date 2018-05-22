@@ -1,6 +1,7 @@
 package org.project.barcodegeneratev2.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Base64;
 
 import javax.servlet.ServletException;
@@ -56,11 +57,9 @@ public class BarcodeGenerateController extends HttpServlet {
 		String size = request.getParameter("size");
 		
 		int sizeConvert = Integer.parseInt(size); //convert string to int
-		char level = errorCorrection.charAt(0); // convert string to char
-		
 		
 		System.out.println("dataType: " + dataType);
-		System.out.println("errorCorrection: " + level);
+		System.out.println("errorCorrection: " + errorCorrection);
 		System.out.println("barcodeType: " + barcodeType);
 		System.out.println("size: " + sizeConvert);
 		
@@ -80,6 +79,8 @@ public class BarcodeGenerateController extends HttpServlet {
 		}
 		
 		System.out.println("context: " + context);
+		System.out.println("-------------");
+		
 		qrTextInfo.setContext(context);	
 		
 //		String Logo = "./src/main/webapp/resources/image/cmonbruh.png";
@@ -97,6 +98,7 @@ public class BarcodeGenerateController extends HttpServlet {
 			if(barcodeType == "1d") {
 				out = QrcodeService.generateCode128(context, sizeConvert, sizeConvert);
 			}else {
+				char level = errorCorrection.charAt(0); // convert string to char
 				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level);
 				if(qrtextForm.getFileData() != null) {
 					MultipartFile file = qrtextForm.getFileData();
@@ -111,8 +113,13 @@ public class BarcodeGenerateController extends HttpServlet {
 			
 			byte[] encodeBase64 = Base64.getEncoder().encode(out);
 			String base64DataString = new String(encodeBase64 , "UTF-8");
+			
 			request.setAttribute("output", base64DataString);
 			request.setAttribute("input", context);
+			request.setAttribute("size", size);
+			request.setAttribute("dataType", dataType);
+			request.setAttribute("errorCorrection", errorCorrection);
+			
 			request.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(request, response);
 		} catch (WriterException e) {
 			// TODO Auto-generated catch block
