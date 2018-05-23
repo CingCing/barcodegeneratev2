@@ -96,12 +96,12 @@
                                 </tr>
                                 <tr ng-if="selectedContent == 1">
                                     <td class="firstColumn">Email</td>
-                                    <td class="secondColumn"><input type="text" name="email" class="gwt-TextBox" required autofocus></td>
+                                    <td class="secondColumn"><input type="email" name="email" class="gwt-TextBox" required autofocus></td>
                                 </tr>
 								
 								<tr ng-if="selectedContent == 2 || selectedContent == 3">
 									<td class="firstColumn">Phone number</td>
-									<td class="secondColumn"><input type="text" name="phone" class="gwt-TextBox " required autofocus></td>
+									<td class="secondColumn"><input type="number" name="phone" class="gwt-TextBox" min="1" required autofocus></td>
 								</tr>
 								
 								<tr ng-if="selectedContent == 3">
@@ -173,7 +173,8 @@
                                 <tr>
                                     <td class="firstColumn">&nbsp;</td>
                                     <td class="secondColumn">
-                                        <button type="submit" ng-disabled="" class="gwt-Button">Generate --></button>
+                                        <button class="button" type="submit" ng-disabled="" style="vertical-align:middle"><span>Generate </span></button>
+                                    	
                                     </td>
                                 </tr>
                                 </tbody>
@@ -188,18 +189,18 @@
                 <table cellspacing="0" cellpadding="0">
                     <tbody>
                     <tr>
-                        <td align="left" style="vertical-align: top;">
+                        <td align="left" style="vertical-align: top;">                        	
                             <div id="imageresult">
                                 <div id="innerresult">
-                                	<c:if test="${empty output }">
+                                	<%-- <c:if test="${empty output }">
 										<img src="resources/image/helloworld.png" class="gwt-Image">
-									</c:if>
+									</c:if> --%>
 									<c:if test="${not empty output }">
 										<img src="data:image/png;base64,${output }" class="gwt-Image">
-									</c:if>
-                                
+									</c:if>                                
                                 </div>
                             </div>
+                            
                         </td>
                     </tr>
                     <tr>
