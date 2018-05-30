@@ -95,34 +95,46 @@
                                     </select></td>
                                 </tr>
                                 <tr ng-if="selectedContent == 1">
-                                    <td class="firstColumn">Email</td>
-                                    <td class="secondColumn"><input type="email" name="email" class="gwt-TextBox" required autofocus></td>
+                                    <td class="firstColumn">Email <span style="color: red">*</span></td>
+                                    <td class="secondColumn"><input type="email" name="email" class="gwt-TextBox" 
+                                    value='<c:if test="${not empty email}">${email }</c:if>'
+                                    required autofocus></td>
                                 </tr>
 								
 								<tr ng-if="selectedContent == 2 || selectedContent == 3">
-									<td class="firstColumn">Phone number</td>
-									<td class="secondColumn"><input type="number" name="phone" class="gwt-TextBox" min="1" required autofocus></td>
+									<td class="firstColumn">Phone number <span style="color: red">*</span></td>
+									<td class="secondColumn"><input type="number" name="phone" class="gwt-TextBox" min="1" 
+									value='<c:if test="${not empty phone}">${phone }</c:if>'
+									required autofocus></td>
 								</tr>
 								
 								<tr ng-if="selectedContent == 3">
 									<td class="firstColumn">Message</td>
-									<td class="secondColumn"><textarea name="msg" class="gwt-TextArea" required></textarea></td>
+									<td class="secondColumn"><input type="text" name="msg" class="gwt-TextBox" 
+									value='<c:if test="${not empty msg}">${msg }</c:if>'
+									required></td>
 								</tr>
 								
                                 <tr ng-if="selectedContent == '' || !selectedContent">
-									<td class="firstColumn">Text content</td>
-									<td class="secondColumn"><textarea name="text" class="gwt-TextArea " rows="5" required autofocus></textarea></td>
+									<td class="firstColumn">Text content <span style="color: red">*</span></td>
+									<td class="secondColumn"><input type="text" name="text" class="gwt-TextBox " rows="5" 
+									value='<c:if test="${not empty text}">${text }</c:if>'
+									required autofocus></td>
 								</tr>
 								
-								<tr ng-if="selectedContent == 5">
-									<td class="firstColumn">URL</td>
-									<td class="secondColumn"><input type="url" name="qrtext" class="gwt-TextBox" value="http://" placeholder="http://" required autofocus></td>
+								<tr ng-if="selectedContent == 4">
+									<td class="firstColumn">URL <span style="color: red">*</span></td>
+									<td class="secondColumn"><input type="url" name="url" class="gwt-TextBox" 
+									value='<c:if test="${not empty url}">${url }</c:if> <c:if test="${empty url}">http://</c:if>'
+									placeholder="http://" required autofocus></td>
 								</tr>
 								
-								<tr >
-									<td class="firstColumn">Upload with logo: </td>
-									<td class="secondColumn"><input type="file" name="fileData" path="fileData" /></td>
-								</tr>
+								<c:if test="${pageContext.request.userPrincipal.name != null}">
+									<tr >
+										<td class="firstColumn">Upload with logo: </td>
+										<td class="secondColumn"><input type="file" name="fileData" path="fileData" /></td>
+									</tr>
+								</c:if>
 								
                                 </tbody>
                             </table>

@@ -70,7 +70,6 @@ public class BarcodeGenerateController extends HttpServlet {
 		System.out.println("email: " + email);
 		
 		switch(dataType) {
-		case "": context = text; break;
 		case "1": context = "mailto:" + email; break; //email
 		case "2": context = "tel:" + phone; break; //phone
 		case "3": context = "smsto:" + phone + ":" + msg; break; //sms
@@ -119,6 +118,12 @@ public class BarcodeGenerateController extends HttpServlet {
 			request.setAttribute("size", size);
 			request.setAttribute("dataType", dataType);
 			request.setAttribute("errorCorrection", errorCorrection);
+			
+			request.setAttribute("url", url);
+			request.setAttribute("phone", phone);
+			request.setAttribute("msg", msg);
+			request.setAttribute("text", text);
+			request.setAttribute("email", email);
 			
 			request.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(request, response);
 		} catch (WriterException e) {
