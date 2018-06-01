@@ -10,16 +10,6 @@
 <title>QR Code Generator</title>
 <jsp:include page="_menu.jsp" />
 
-<!-- <script   type="text/javascript">
-	var app = angular.module('myApp', []);
-	app.controller('myCtrl', function($scope, $http){
-		$http.get('http://localhost:8080/BarcodeGenerateV2/home')
-		.then(function(response){
-			$scope.output = response.data;
-		});
-	});
-</script> -->
-
 </head>
 <body>	
 <div id="ui" ng-app="">
@@ -44,7 +34,7 @@
                                 	<tr>
                          				<td class="firstColumn">Barcode Type</td>
                          				<td class="secondColumn">
-                         				<select class="gwt-ListBox" name="barcodeType" ng-model="barcodeType">
+                         				<select class="gwt-ListBox" name="barcodeType" ng-model="barcodeType" ng-init="barcodeType = '${barcodeType }'">
                          					<option value="">QR Code</option>  
                          					<option value="1d">Code 128</option>                            				                          	
                             			</select></td>
@@ -63,8 +53,8 @@
                                 </colgroup>
                                 <tbody>
                                 <tr>
-                                    <td class="firstColumn">Content</td>
-                                    <td class="secondColumn"><input type="text" name="code128" class="gwt-TextBox" required autofocus></td>
+                                    <td class="firstColumn">Content <span style="color: red">*</span></td>
+                                    <td class="secondColumn"><input type="text" id="code128" name="code128" class="gwt-TextBox" value='<c:if test="${not empty code128}">${code128 }</c:if>' required autofocus></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -96,30 +86,44 @@
                                     	</select></td>
                                 </tr>
                                 <tr ng-if="selectedContent == 1">
-                                    <td class="firstColumn">Email</td>
-                                    <td class="secondColumn"><input type="email" name="email" class="gwt-TextBox" required autofocus></td>
+                                    <td class="firstColumn">Email <span style="color: red">*</span></td>
+                                    <td class="secondColumn"><input type="email" name="email" class="gwt-TextBox" 
+                                    value='<c:if test="${not empty email}">${email }</c:if>'
+                                    required autofocus></td>
                                 </tr>
 								
 								<tr ng-if="selectedContent == 2 || selectedContent == 3">
-									<td class="firstColumn">Phone number</td>
-									<td class="secondColumn"><input type="number" name="phone" class="gwt-TextBox" min="1" required autofocus></td>
+									<td class="firstColumn">Phone number <span style="color: red">*</span></td>
+									<td class="secondColumn"><input type="number" name="phone" class="gwt-TextBox" min="1" 
+									value='<c:if test="${not empty phone}">${phone }</c:if>'
+									required autofocus></td>
 								</tr>
 								
 								<tr ng-if="selectedContent == 3">
 									<td class="firstColumn">Message</td>
-									<td class="secondColumn"><textarea name="msg" class="gwt-TextArea" required></textarea></td>
+									<td class="secondColumn"><input type="text" name="msg" class="gwt-TextBox" 
+									value='<c:if test="${not empty msg}">${msg }</c:if>'
+									required></td>
 								</tr>
 								
                                 <tr ng-if="selectedContent == '' || !selectedContent">
-									<td class="firstColumn">Text content</td>
-									<td class="secondColumn"><textarea name="text" class="gwt-TextArea " rows="5" required autofocus></textarea></td>
-								</tr>
+									<td class="firstColumn">Text content <span style="color: red">*</span></td>
+									<td class="secondColumn"><input type="text" name="text" class="gwt-TextBox " rows="5" 
+									value='<c:if test="${not empty text}">${text }</c:if>'
+									required autofocus></td>
+								</tr>								
 								
 								<tr ng-if="selectedContent == 4">
-									<td class="firstColumn">URL</td>
-									<td class="secondColumn"><input type="url" name="qrtext" class="gwt-TextBox" value="http://" placeholder="http://" required autofocus></td>
+									<td class="firstColumn">URL <span style="color: red">*</span></td>
+									<td class="secondColumn"><input type="url" name="url" class="gwt-TextBox" 
+									value='<c:if test="${not empty url}">${url }</c:if> <c:if test="${empty url}">http://</c:if>'
+									placeholder="http://" required autofocus></td>
 								</tr>
 								
+								<tr >
+									<td class="firstColumn">Data Color		<input type="color" name="sDataColor" >	</td>
+									<td class="secondColumn">OutSide Color	<input type="color" name="sQuiteZoneColor" ></td>
+								</tr>
 								<tr >
 									<td class="firstColumn">Upload with logo: </td>
 									<td class="secondColumn"><input type="file" name="fileData" path="fileData" /></td>
@@ -144,8 +148,7 @@
                                 <tr>
                                     <td class="firstColumn">Barcode size</td>
                                     <td class="secondColumn"><select class="gwt-ListBox" name="size" id="size">
-                                        <option value="120" <c:if test="${size == '120'}">selected</c:if>>Small</option>
-                                        
+                                        <option value="120" <c:if test="${size == '120'}">selected</c:if>>Small</option>                                        
                                         <option value="230" <c:if test="${empty size || size =='230'}">selected</c:if> >Medium</option>
                                         <option value="350" <c:if test="${size == '350'}">selected</c:if>>Large</option>
                                     </select></td>

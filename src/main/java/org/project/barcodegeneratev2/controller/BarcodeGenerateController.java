@@ -55,6 +55,8 @@ public class BarcodeGenerateController extends HttpServlet {
 		String errorCorrection = request.getParameter("errorCorrection");
 		String barcodeType = request.getParameter("barcodeType");
 		String size = request.getParameter("size");
+		String sDataColor = request.getParameter("sDataColor");
+		String sQuiteZoneColor = request.getParameter("sQuiteZoneColor");
 		
 		int sizeConvert = Integer.parseInt(size); //convert string to int
 		
@@ -66,6 +68,19 @@ public class BarcodeGenerateController extends HttpServlet {
 			case "4": context = url; break; //url
 			default: context = text; break;
 			}
+		}
+		
+		if(sDataColor == "" || sDataColor == null) {
+			sDataColor = "0xFF000000";
+		}else {
+			sDataColor = sDataColor.substring(1);
+			sDataColor = "0xFF" + sDataColor;
+		}
+		if(sQuiteZoneColor == "" || sQuiteZoneColor == null) {
+			sQuiteZoneColor = "0xFFFFFFFF";
+		}else {
+			sQuiteZoneColor = sQuiteZoneColor.substring(1);
+			sQuiteZoneColor = "0xFF" + sQuiteZoneColor;
 		}
 		
 		qrTextInfo.setContext(context);	
@@ -83,29 +98,36 @@ public class BarcodeGenerateController extends HttpServlet {
 			
 			if((barcodeType == "1d" || barcodeType.equals("1d")) && !barcodeType.isEmpty()) {	 //generate Code 128
 				out = QrcodeService.generateCode128(code128, sizeConvert, sizeConvert);
+				request.setAttribute("code128", code128);
 			}else {																			  	//generate QR Code
 				char level = errorCorrection.toUpperCase().charAt(0); 							// convert string to char uppercase
-				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level);	//generate QR Code without image inside
+				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level, sDataColor, sQuiteZoneColor);	//generate QR Code without image inside
 				if(qrtextForm.getFileData() != null) {
 					MultipartFile file = qrtextForm.getFileData();
 					if(!file.isEmpty()) {
 						byte[] imageByte = file.getBytes();
-						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte);	//generate QR Code with image inside
+						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte, sDataColor, sQuiteZoneColor);	//generate QR Code with image inside
 					}				
 				}
 				
 				this.qrTextDAO.insertQrText(qrTextInfo);										//save data to database
-				request.setAttribute("input", context);											//set data to jsp page
-				request.setAttribute("size", size);												
+				request.setAttribute("input", context);											//set data to jsp page														
 				request.setAttribute("dataType", dataType);										
 				request.setAttribute("errorCorrection", errorCorrection);
+				request.setAttribute("url", url);
+				request.setAttribute("phone", phone);
+				request.setAttribute("msg", msg);
+				request.setAttribute("text", text);
+				request.setAttribute("email", email);
 			}				
 
 			
 			byte[] encodeBase64 = Base64.getEncoder().encode(out);								//encode data to base64
 			String base64DataString = new String(encodeBase64 , "UTF-8");						//convert database64 to String
 			
-			request.setAttribute("output", base64DataString);									//set data to jsp page
+			request.setAttribute("output", base64DataString);									//set data to jsp page	
+			request.setAttribute("size", size);		
+			request.setAttribute("barcodeType", barcodeType);
 			request.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(request, response);	//send data to jsp page
 			
 		} catch (WriterException e) {

@@ -68,6 +68,25 @@ public class QrcodeService {
 	    return pngData;
 	}
 	
+	public static byte[] generateQRCode(String text, int width, int height, char level, String dataColor, String quiteZoneColor) throws WriterException, IOException {
+		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
+		
+		switch(level) {
+		case 'L': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L); break;
+		case 'M': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); break;
+		case 'Q': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q); break;
+		case 'H': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); break;
+		}		
+		
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();	    
+	    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
+	    
+	    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+	    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream, getMatrixConfig(dataColor, quiteZoneColor));
+	    byte[] pngData = pngOutputStream.toByteArray(); 
+	    return pngData;
+	}
+	
 	public static void generateQRCodeImage(String text, int width, int height, String filePath)
             throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -77,7 +96,7 @@ public class QrcodeService {
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
     }
 	
-	public static void generateQRCodeImageOverlay(String text, int width, int height, String filePath, String Logo)
+	public static void generateQRCodeImageOverlay(String text, int width, int height, String filePath, String Logo, String dataColor, String quiteZoneColor)
             throws WriterException, IOException {
 		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);		
@@ -88,7 +107,7 @@ public class QrcodeService {
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
         
         // Load QR image
-        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
+        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig(dataColor, quiteZoneColor));
         
         // Load logo image
         BufferedImage overly = getOverlay(Logo);       
@@ -119,7 +138,7 @@ public class QrcodeService {
 //        return pngData;
     }
 	
-	public static byte[] generateQRCodeImageOverlayWebData(String text, int width, int height, byte[] imageByte)
+	public static byte[] generateQRCodeImageOverlayWebData(String text, int width, int height, byte[] imageByte, String dataColor, String quiteZoneColor)
             throws WriterException, IOException {
 		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);		
@@ -130,7 +149,7 @@ public class QrcodeService {
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
         
         // Load QR image
-        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
+        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig(dataColor, quiteZoneColor));
         
         // Load logo image
         BufferedImage overly = getOverlayByte(imageByte);      
@@ -181,10 +200,14 @@ public class QrcodeService {
 			return resizedImage;
 	 }
 	
-	private static MatrixToImageConfig getMatrixConfig() {
+	private static MatrixToImageConfig getMatrixConfig(String sDataColor, String sQuiteZoneColor) {		
         // ARGB Colors
+		long c = Long.decode(sDataColor);
+		long c1 = Long.decode(sQuiteZoneColor);		
+	    int dataColor = (int) c;
+	    int quiteZoneColor = (int) c1;
         // Check Colors ENUM
-        return new MatrixToImageConfig(QrcodeService.Colors.BLACK.getArgb(), QrcodeService.Colors.WHITE.getArgb());
+        return new MatrixToImageConfig(dataColor, quiteZoneColor);
     }
 	
 	public enum Colors {
