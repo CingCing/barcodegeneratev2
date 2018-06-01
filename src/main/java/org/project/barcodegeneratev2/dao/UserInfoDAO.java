@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserInfoDAO {
 	@Autowired
-	private SessionFactory sessionFactory;
+	private SessionFactory sessionFactory; //Tương ứng với 1 phiên làm việc với csdl
 	
 	public UserInfoDAO() {
 	 
 	}
-	
+	//Tìm user trong csdl
 	public UserInfo findUserInfo(String userName) {
 		String sql="Select new " + UserInfo.class.getName() + " (u.username,u.password) " + "from " 
 				+ User.class.getName() + " u where u.username = :username";
@@ -31,7 +31,7 @@ public class UserInfoDAO {
 		
 		return (UserInfo) query.uniqueResult();
 	}
-	
+	// lấy ra danh sách các quyền trong csdl
 	public List<String> getUserRoles(String userName) {
         String sql = "Select r.userRole "//
                 + " from " + UserRole.class.getName() + " r where r.user.username = :username ";

@@ -1,0 +1,166 @@
+body {
+  background-color: #e9eef3;
+  margin: 0;
+  padding: 0;
+
+  font-size: 16px;
+}
+#header {
+  background-color: #dde3e9;
+  border-bottom: 1px solid #f2f7fc;
+}
+#header h1 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  padding: 12px;
+  border-bottom: 1px solid #c8d0d9;
+}
+#header span {
+  font-weight: normal;
+  color: #5e6b75;
+}
+#footer {
+  width: 100%;
+  text-align:center;
+  padding-top: 12px;
+}
+#footer a {
+  text-decoration:none;
+  color: #5e6b75;
+}
+/****************************************/
+#mainpanel {
+  width: 800px;
+  margin: 0 auto;
+  padding: 12px;
+  font-size: 16px;
+}
+#imageresult {
+  background-color: #dde3e9;
+  height: 350px;
+  width: 350px;
+  vertical-align: middle;
+  text-align:center;
+  padding: 10px;
+  
+  position: relative;
+  display: table;
+}
+#innerresult {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+}
+#downloadText {
+  font-size: 16px;
+}
+#urlresult {
+  width: 350px;
+}
+#rawtextresult {
+  width: 350px;
+}
+.firstColumn {
+  width: 150px;
+  text-align: right;
+  vertical-align: top;
+  padding: 4px 0 4px 0;
+  color: #5e6b75;
+  font-weight: bold;
+  font-size: 14px;
+}
+.secondColumn {
+  width: 270px;
+  font-size: 16px;
+  color: #5e6b75;
+  font-weight: bold;
+}
+/*.inputfield,*/
+.gwt-TextBox,
+.gwt-TextArea {
+  border: 1px solid #c8d0d9;
+  padding: 4px;
+  width: 256px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #000;
+  font-weight: normal;
+}
+/*.inputfield:focus,*/
+.gwt-TextBox:focus {
+  background-color: #fffbcc;
+}
+.required {
+  background: #ffffff url(/required-field-bg.png) repeat-y;
+}
+.errorMessage {
+  padding-left: 110px;
+  font-size: 16px;
+  color: red;
+}
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+/**animate button**/
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #4eb8dd;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 10px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+.btn-radius {
+	border-radius: 50%;  background-color: gray; font-size: 14px; cursor: pointer; text-align: center;
+    text-decoration: none;  border: 2px solid #e7e7e7; width: 72px;
+    height: 72px;
+    color: white;
+}
+.topright {
+    padding: 50px;
+    position: absolute;
+    border: 1px solid black;
+    background-color: red;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -ms-transform-origin: 20% 40%; /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Safari 3-8 */
+    -webkit-transform-origin: 20% 40%; /* Safari 3-8 */
+    transform: rotate(45deg);
+    transform-origin: 20% 40%;
+}
+.container {
+    position: relative;
+}

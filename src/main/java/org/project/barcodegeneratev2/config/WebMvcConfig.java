@@ -31,10 +31,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	// Cấu hình để sử dụng các file nguồn tĩnh (html, image, ..)
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);
-		registry.addResourceHandler("/scss/**").addResourceLocations("/scss/").setCachePeriod(31556926);
-		registry.addResourceHandler("/image/**").addResourceLocations("/image/").setCachePeriod(31556926);
-		registry.addResourceHandler("/js/**").addResourceLocations("/js/").setCachePeriod(31556926);
+		registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/").setCachePeriod(31556926);
+		registry.addResourceHandler("/scss/**").addResourceLocations("/resources/scss/").setCachePeriod(31556926);
+		registry.addResourceHandler("/image/**").addResourceLocations("/resources/image/").setCachePeriod(31556926);
+		registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/").setCachePeriod(31556926);
 //		registry.addResourceHandler("/style/**").addResourceLocations("/WEB-INF/resources/css/");
 	}
 

@@ -192,6 +192,7 @@
 		<div class="inputGroup inputGroup1">
 			<label for="loginEmail" id="loginEmailLabel">Username</label> 
 			<input type="text" id="loginEmail" name="username" required="required" />
+			<p class="helper helper1">email@domain.com</p>
 		</div>
 		<div class="inputGroup inputGroup2">
 			<label for="loginPassword" id="loginPasswordLabel">Password</label> 
