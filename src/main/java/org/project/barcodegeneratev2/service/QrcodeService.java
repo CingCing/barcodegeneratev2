@@ -24,6 +24,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.Code128Writer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
@@ -39,8 +40,8 @@ public class QrcodeService {
 	}
 	
 	public static byte[] generateCode128(String text, int width, int height) throws WriterException, IOException {
-	    QRCodeWriter qrCodeWriter = new QRCodeWriter();
-	    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.CODE_128, width, height);
+		Code128Writer code128Writer = new Code128Writer();
+	    BitMatrix bitMatrix = code128Writer.encode(text, BarcodeFormat.CODE_128, width, height);
 	    
 	    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
 	    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
@@ -133,7 +134,7 @@ public class QrcodeService {
         
         // Load logo image
         BufferedImage overly = getOverlayByte(imageByte);      
-        //resize image if its big
+        //resize image if its big than 100px
         if(overly.getHeight() > 100 || overly.getWidth() >100) {
         	overly = resizeImage(overly);
         }
@@ -157,9 +158,7 @@ public class QrcodeService {
         // Write combined image as PNG to OutputStream
         ImageIO.write(combined, "png", pngOutputStream);
         
-        byte[] pngData = pngOutputStream.toByteArray(); 
-        //store image in file
-//        Files.copy(new ByteArrayInputStream(pngData), Paths.get(filePath + text + ".png"), StandardCopyOption.REPLACE_EXISTING);
+        byte[] pngData = pngOutputStream.toByteArray();        
         
         return pngData;
     }

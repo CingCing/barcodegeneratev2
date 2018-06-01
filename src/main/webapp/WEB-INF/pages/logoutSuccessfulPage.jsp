@@ -9,5 +9,6 @@
 </head>
 <body>
     <h1>Logout Successful!</h1>
+    <h3>Redirecting to home page ...</h3>
 </body>
 </html>

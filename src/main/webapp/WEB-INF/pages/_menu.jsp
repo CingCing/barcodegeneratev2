@@ -2,7 +2,7 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 <style>
 * {box-sizing: border-box;}
@@ -57,34 +57,38 @@
 
 </head>
  
+<c:set var="url" value ="/BarcodeGenerateV2/WEB-INF/pages/home.jsp" />
+<c:set var="loginUrl" value ="/BarcodeGenerateV2/WEB-INF/pages/loginPage.jsp" />
+<c:set var= "currentUrl" value= "${pageContext.request.requestURI}"/>
+
+<%--  <c:out value=" ${ currentUrl}"/> --%>
 
  <div class="header">
- <a class="active" href="${pageContext.request.contextPath}/">Home</a>
- <div class=" header-right">
-  
-  
+ <a <c:if test = "${currentUrl == url}">
+         class='active'
+      </c:if>
+       href="${pageContext.request.contextPath}/">Home</a>
+ <div class=" header-right">  
+
 <%--    <a href="${pageContext.request.contextPath}/userInfo">User Info</a> --%>
   
 <!--   | &nbsp; -->
   
   <%-- <a href="${pageContext.request.contextPath}/admin">Admin</a> --%>
   
-  <c:if test="${pageContext.request.userPrincipal.name == null}">
-  
-     
-     <a href="${pageContext.request.contextPath}/login">Log in</a>
-     
+  <c:if test="${pageContext.request.userPrincipal.name == null}">  
+     <a 
+     <c:if test = "${currentUrl == loginUrl}">
+         class='active'
+      </c:if>
+      href="${pageContext.request.contextPath}/login">Log in</a>     
   </c:if>
   
-  <c:if test="${pageContext.request.userPrincipal.name == null}">
-  
-    
-     <a href="${pageContext.request.contextPath}/signup">Sign up</a>
-     
+  <c:if test="${pageContext.request.userPrincipal.name == null}">     
+     <a href="${pageContext.request.contextPath}/signup">Sign up</a>     
   </c:if>
   
   <c:if test="${pageContext.request.userPrincipal.name != null}">
-  
      
      <a href="${pageContext.request.contextPath}/logout">Log out</a>
      

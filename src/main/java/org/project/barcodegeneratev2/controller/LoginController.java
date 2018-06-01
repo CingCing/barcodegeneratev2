@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Transactional
 public class LoginController {
 	
-	@RequestMapping(value = { "/", "/welcome" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	   public String welcomePage(Model model) {
 	       model.addAttribute("title", "Welcome");
 //	       QrTextInfo qrcodeForm = new QrTextInfo();
 //	       model.addAttribute("qrcodeForm", qrcodeForm);
-	       return "welcomePage";
+	       return "home";
 	   }
 	 
 	   @RequestMapping(value = "/admin", method = RequestMethod.GET)
@@ -32,9 +32,8 @@ public class LoginController {
 	   }
 	 
 	   @RequestMapping(value = "/logoutSuccessful", method = RequestMethod.GET)
-	   public String logoutSuccessfulPage(Model model) {
-	       model.addAttribute("title", "Logout");
-	       return "logoutSuccessfulPage";
+	   public String logoutSuccessfulPage(Model model) {	       
+	       return "redirect:/";
 	   }
 	 
 	   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)

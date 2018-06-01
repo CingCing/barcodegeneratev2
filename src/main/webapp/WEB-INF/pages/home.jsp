@@ -64,7 +64,7 @@
                                 <tbody>
                                 <tr>
                                     <td class="firstColumn">Content</td>
-                                    <td class="secondColumn"><input type="text" name="qrtext" class="gwt-TextBox" required autofocus></td>
+                                    <td class="secondColumn"><input type="text" name="code128" class="gwt-TextBox" required autofocus></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -81,18 +81,19 @@
                                 <tbody>
                                 <tr>
                                     <td class="firstColumn">Data type</td>
-                                    <td class="secondColumn"><select class="gwt-ListBox" ng-model="selectedContent" id="dataType" name="dataType" ng-init="selectedContent = '${dataType }'">
-                                        <!--<option value="Calendar event">Calendar event</option> -->
-                                        <!--<option value="Contact information">Contact information</option>-->
-										<!-- <option value="">Please select data type </option> -->
-										<option value="">Text</option>
-                                        <option value="1" >Email address</option>
-                                       <!-- <option value="Geo location">Geo location</option> -->
-                                        <option value="2" >Phone number</option>
-                                        <option value="3" >SMS</option>                                        
-                                        <option value="4" >URL</option>
-                                        <!--<option value="Wifi network">Wifi network</option> -->
-                                    </select></td>
+                                    <td class="secondColumn">
+                                    	<select class="gwt-ListBox" ng-model="selectedContent" id="dataType" name="dataType" ng-init="selectedContent = '${dataType }'">
+                                        	<!--<option value="Calendar event">Calendar event</option> -->
+                                        	<!--<option value="Contact information">Contact information</option>-->
+											<!-- <option value="">Please select data type </option> -->
+											<option value="">Text</option>
+                                        	<option value="1" >Email address</option>
+                                      		<!-- <option value="Geo location">Geo location</option> -->
+                                        	<option value="2" >Phone number</option>
+                                        	<option value="3" >SMS</option>                                        
+                                        	<option value="4" >URL</option>
+                                        	<!--<option value="Wifi network">Wifi network</option> -->
+                                    	</select></td>
                                 </tr>
                                 <tr ng-if="selectedContent == 1">
                                     <td class="firstColumn">Email</td>
@@ -114,7 +115,7 @@
 									<td class="secondColumn"><textarea name="text" class="gwt-TextArea " rows="5" required autofocus></textarea></td>
 								</tr>
 								
-								<tr ng-if="selectedContent == 5">
+								<tr ng-if="selectedContent == 4">
 									<td class="firstColumn">URL</td>
 									<td class="secondColumn"><input type="url" name="qrtext" class="gwt-TextBox" value="http://" placeholder="http://" required autofocus></td>
 								</tr>
@@ -144,7 +145,8 @@
                                     <td class="firstColumn">Barcode size</td>
                                     <td class="secondColumn"><select class="gwt-ListBox" name="size" id="size">
                                         <option value="120" <c:if test="${size == '120'}">selected</c:if>>Small</option>
-                                        <option value="230" <c:if test="${empty size}">selected</c:if> <c:if test="${size == '230'}">selected</c:if>>Medium</option>
+                                        
+                                        <option value="230" <c:if test="${empty size || size =='230'}">selected</c:if> >Medium</option>
                                         <option value="350" <c:if test="${size == '350'}">selected</c:if>>Large</option>
                                     </select></td>
                                 </tr>
@@ -192,9 +194,9 @@
                         <td align="left" style="vertical-align: top;">                        	
                             <div id="imageresult">
                                 <div id="innerresult">
-                                	<%-- <c:if test="${empty output }">
+                                	<!-- <c:if test="${empty output }">
 										<img src="resources/image/helloworld.png" class="gwt-Image">
-									</c:if> --%>
+									</c:if>  -->
 									<c:if test="${not empty output }">
 										<img src="data:image/png;base64,${output }" class="gwt-Image">
 									</c:if>                                

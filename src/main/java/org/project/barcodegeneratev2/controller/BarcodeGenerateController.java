@@ -44,8 +44,8 @@ public class BarcodeGenerateController extends HttpServlet {
 	
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.POST)	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, @ModelAttribute QrTextInfo qrtextForm) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String context;
+		String context = "";
+		String code128 = request.getParameter("code128");
 		String url = request.getParameter("url");
 		String phone = request.getParameter("phone");
 		String msg = request.getParameter("msg");
@@ -58,33 +58,19 @@ public class BarcodeGenerateController extends HttpServlet {
 		
 		int sizeConvert = Integer.parseInt(size); //convert string to int
 		
-		System.out.println("dataType: " + dataType);
-		System.out.println("errorCorrection: " + errorCorrection);
-		System.out.println("barcodeType: " + barcodeType);
-		System.out.println("size: " + sizeConvert);
-		
-		System.out.println("url: " + url);
-		System.out.println("phone: " + phone);
-		System.out.println("msg: " + msg);
-		System.out.println("text: " + text);
-		System.out.println("email: " + email);
-		
-		switch(dataType) {
-		case "": context = text; break;
-		case "1": context = "mailto:" + email; break; //email
-		case "2": context = "tel:" + phone; break; //phone
-		case "3": context = "smsto:" + phone + ":" + msg; break; //sms
-		case "4": context = url; break; //url
-		default: context = text; break;
+		if(code128=="" || code128 == null) {			
+			switch(dataType) { //format QR Code date type
+			case "1": context = "mailto:" + email; break; //email
+			case "2": context = "tel:" + phone; break; //phone
+			case "3": context = "smsto:" + phone + ":" + msg; break; //sms
+			case "4": context = url; break; //url
+			default: context = text; break;
+			}
 		}
 		
-		System.out.println("context: " + context);
-		System.out.println("-------------");
-		
 		qrTextInfo.setContext(context);	
-		
-//		String Logo = "./src/main/webapp/resources/image/cmonbruh.png";
 
+		//get author name
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = "guest";
 		if(auth.getName() != null) {			
@@ -95,32 +81,33 @@ public class BarcodeGenerateController extends HttpServlet {
 		try {		
 			byte[] out;
 			
-			if(barcodeType == "1d") {
-				out = QrcodeService.generateCode128(context, sizeConvert, sizeConvert);
-			}else {
-				char level = errorCorrection.charAt(0); // convert string to char
-				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level);
+			if((barcodeType == "1d" || barcodeType.equals("1d")) && !barcodeType.isEmpty()) {	 //generate Code 128
+				out = QrcodeService.generateCode128(code128, sizeConvert, sizeConvert);
+			}else {																			  	//generate QR Code
+				char level = errorCorrection.toUpperCase().charAt(0); 							// convert string to char uppercase
+				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level);	//generate QR Code without image inside
 				if(qrtextForm.getFileData() != null) {
 					MultipartFile file = qrtextForm.getFileData();
 					if(!file.isEmpty()) {
 						byte[] imageByte = file.getBytes();
-						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte);
+						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte);	//generate QR Code with image inside
 					}				
 				}
-			}		
+				
+				this.qrTextDAO.insertQrText(qrTextInfo);										//save data to database
+				request.setAttribute("input", context);											//set data to jsp page
+				request.setAttribute("size", size);												
+				request.setAttribute("dataType", dataType);										
+				request.setAttribute("errorCorrection", errorCorrection);
+			}				
+
 			
-//			this.qrTextDAO.insertQrText(qrTextInfo);
+			byte[] encodeBase64 = Base64.getEncoder().encode(out);								//encode data to base64
+			String base64DataString = new String(encodeBase64 , "UTF-8");						//convert database64 to String
 			
-			byte[] encodeBase64 = Base64.getEncoder().encode(out);
-			String base64DataString = new String(encodeBase64 , "UTF-8");
+			request.setAttribute("output", base64DataString);									//set data to jsp page
+			request.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(request, response);	//send data to jsp page
 			
-			request.setAttribute("output", base64DataString);
-			request.setAttribute("input", context);
-			request.setAttribute("size", size);
-			request.setAttribute("dataType", dataType);
-			request.setAttribute("errorCorrection", errorCorrection);
-			
-			request.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(request, response);
 		} catch (WriterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
