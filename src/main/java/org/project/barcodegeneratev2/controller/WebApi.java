@@ -12,8 +12,6 @@ import org.project.barcodegeneratev2.dao.QrTextDAO;
 import org.project.barcodegeneratev2.model.QrTextInfo;
 import org.project.barcodegeneratev2.service.QrcodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,7 +35,11 @@ public class WebApi extends HttpServlet {
 		String type = request.getParameter("type");
 		String size = request.getParameter("size");
 		String level = request.getParameter("level");		
+		String username = request.getParameter("author");
 		
+		if(username == null || username=="") {
+			username = "excel";
+		}
 		if(type == null) {
 			type = "qr";
 		}
@@ -65,12 +67,13 @@ public class WebApi extends HttpServlet {
 			qrTextInfo.setContext(context);	
 			
 //			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String username = "excel";
+			
 //			if(auth.getName() != null) {			
 //				username = auth.getName();
 //			}		 
 			qrTextInfo.setUsername(username);
 			
+			System.out.println("username: " + username);
 			this.qrTextDAO.insertQrText(qrTextInfo);
 			
 			respone.setContentType("image/png");
