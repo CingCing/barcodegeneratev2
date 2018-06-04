@@ -37,7 +37,11 @@ public class WebApi extends HttpServlet {
 		String type = request.getParameter("type");
 		String size = request.getParameter("size");
 		String level = request.getParameter("level");		
+		String username = request.getParameter("author");
 		
+		if(username == null || username=="") {
+			username = "excel";
+		}
 		if(type == null) {
 			type = "qr";
 		}
@@ -65,7 +69,7 @@ public class WebApi extends HttpServlet {
 			qrTextInfo.setContext(context);	
 			
 //			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String username = "excel";
+			
 //			if(auth.getName() != null) {			
 //				username = auth.getName();
 //			}		 

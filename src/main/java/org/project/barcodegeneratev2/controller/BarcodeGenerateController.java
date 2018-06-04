@@ -45,6 +45,9 @@ public class BarcodeGenerateController extends HttpServlet {
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.POST)	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, @ModelAttribute QrTextInfo qrtextForm) throws ServletException, IOException {
 		String context = "";
+		String DataColor = "0xFF000000";
+		String QuiteZoneColor = "0xFFFFFFFF";
+		
 		String code128 = request.getParameter("code128");
 		String url = request.getParameter("url");
 		String phone = request.getParameter("phone");
@@ -70,17 +73,11 @@ public class BarcodeGenerateController extends HttpServlet {
 			}
 		}
 		
-		if(sDataColor == "" || sDataColor == null) {
-			sDataColor = "0xFF000000";
-		}else {
-			sDataColor = sDataColor.substring(1);
-			sDataColor = "0xFF" + sDataColor;
+		if(sDataColor != "" && sDataColor != null) {
+			DataColor = convertColor(sDataColor);			
 		}
-		if(sQuiteZoneColor == "" || sQuiteZoneColor == null) {
-			sQuiteZoneColor = "0xFFFFFFFF";
-		}else {
-			sQuiteZoneColor = sQuiteZoneColor.substring(1);
-			sQuiteZoneColor = "0xFF" + sQuiteZoneColor;
+		if(sQuiteZoneColor != "" && sQuiteZoneColor != null) {
+			QuiteZoneColor = convertColor(sQuiteZoneColor);			
 		}
 		
 		qrTextInfo.setContext(context);	
@@ -101,12 +98,12 @@ public class BarcodeGenerateController extends HttpServlet {
 				request.setAttribute("code128", code128);
 			}else {																			  	//generate QR Code
 				char level = errorCorrection.toUpperCase().charAt(0); 							// convert string to char uppercase
-				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level, sDataColor, sQuiteZoneColor);	//generate QR Code without image inside
+				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level, DataColor, QuiteZoneColor);	//generate QR Code without image inside
 				if(qrtextForm.getFileData() != null) {
 					MultipartFile file = qrtextForm.getFileData();
 					if(!file.isEmpty()) {
 						byte[] imageByte = file.getBytes();
-						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte, sDataColor, sQuiteZoneColor);	//generate QR Code with image inside
+						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte, DataColor, QuiteZoneColor);	//generate QR Code with image inside
 					}				
 				}
 				
@@ -119,8 +116,9 @@ public class BarcodeGenerateController extends HttpServlet {
 				request.setAttribute("msg", msg);
 				request.setAttribute("text", text);
 				request.setAttribute("email", email);
+				request.setAttribute("sDataColor", sDataColor);
+				request.setAttribute("sQuiteZoneColor", sQuiteZoneColor);				
 			}				
-
 			
 			byte[] encodeBase64 = Base64.getEncoder().encode(out);								//encode data to base64
 			String base64DataString = new String(encodeBase64 , "UTF-8");						//convert database64 to String
@@ -141,4 +139,9 @@ public class BarcodeGenerateController extends HttpServlet {
 		doGet(request, response);
 	}
 	
+	private String convertColor(String sColor) {
+		sColor = sColor.substring(1);
+		sColor = "0xFF" + sColor;
+		return sColor;
+	}
 }

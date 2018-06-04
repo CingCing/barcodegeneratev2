@@ -6,6 +6,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/stylev2.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <title>QR Code Generator</title>
 <jsp:include page="_menu.jsp" />
@@ -32,7 +33,7 @@
                                 </colgroup>
                                 <tbody>
                                 	<tr>
-                         				<td class="firstColumn">Barcode Type</td>
+                         				<td class="firstColumn">Barcode type</td>
                          				<td class="secondColumn">
                          				<select class="gwt-ListBox" name="barcodeType" ng-model="barcodeType" ng-init="barcodeType = '${barcodeType }'">
                          					<option value="">QR Code</option>  
@@ -119,21 +120,41 @@
 									value='<c:if test="${not empty url}">${url }</c:if> <c:if test="${empty url}">http://</c:if>'
 									placeholder="http://" required autofocus></td>
 								</tr>
-								
-								<tr >
-									<td class="firstColumn">Data Color		<input type="color" name="sDataColor" >	</td>
-									<td class="secondColumn">OutSide Color	<input type="color" name="sQuiteZoneColor" ></td>
-								</tr>
-								<tr >
-									<td class="firstColumn">Upload with logo: </td>
-									<td class="secondColumn"><input type="file" name="fileData" path="fileData" /></td>
-								</tr>
-								
                                 </tbody>
                             </table>
                         </td>
-                    </tr>					                    
-	
+                    </tr>			                
+                                      
+					<c:if test="${pageContext.request.userPrincipal.name != null}">
+					<tr>
+                        <td><span id="errorMessageID" class="errorMessage">&nbsp;</span></td>
+                    </tr>	
+					<tr>
+                        <td>
+                            <table>
+                                <colgroup>
+                                    <col class="firstColumn">
+                                    <col class="secondColumn">
+                                </colgroup>
+                                <tbody>
+                                <tr >
+									<td class="firstColumn">Data color</td>		
+									<td class="secondColumn"><input type="color" name="sDataColor" value='${sDataColor}'></td>									
+								</tr>
+								 <tr >
+									<td class="firstColumn">Background color		</td>
+									<c:if test="${empty sQuiteZoneColor}"><td class="secondColumn"><input type="color" name="sQuiteZoneColor" value='#FFFFFF'></td>	</c:if>
+									<c:if test="${not empty sQuiteZoneColor}"><td class="secondColumn"><input type="color" name="sQuiteZoneColor" value='${sQuiteZoneColor}'></td>	</c:if>								
+								</tr>
+								<tr >
+									<td class="firstColumn">Upload with logo </td>
+									<td class="secondColumn"><input type="file" name="fileData" path="fileData" /></td>
+								</tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+					</c:if>
 					<tr>
                         <td><span id="errorMessageID" class="errorMessage">&nbsp;</span></td>
                     </tr>
@@ -208,11 +229,19 @@
                             
                         </td>
                     </tr>
+                    
+                    <c:if test="${not empty output }">
                     <tr>
                         <td align="left" style="vertical-align: top;">
-                            <div class="gwt-HTML" id="downloadText" aria-hidden="true" style="display: none;"><a href="" id="downloadlink">Download</a> or embed with this URL:</div>
+                            <div class="gwt-HTML" id="downloadText" aria-hidden="true" >
+                            <a href="data:image/png;base64,${output }" id="downloadlink" download="BarcodeImage.png" class="btn" style="text-decoration: none; padding-left: 20px; padding-right: 20px;"><i class="fa fa-download" style="
+    padding-right: 10px;
+"></i>Download</a>
+						</div>
                         </td>
                     </tr>
+                    </c:if>  
+                    
                     <!-- <tr>
                         <td align="left" style="vertical-align: top;"><input type="text" class="gwt-TextBox" id="urlresult" aria-hidden="true" style="display: none;"></td>
                     </tr>

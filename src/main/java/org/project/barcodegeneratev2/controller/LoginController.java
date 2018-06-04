@@ -2,15 +2,22 @@ package org.project.barcodegeneratev2.controller;
 
 import java.security.Principal;
 
-import org.project.barcodegeneratev2.model.QrTextInfo;
+import org.project.barcodegeneratev2.dao.UserInfoDAO;
+import org.project.barcodegeneratev2.model.UserInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @Transactional
 public class LoginController {
+	
+	@Autowired
+	private UserInfoDAO userInfoDao;
 	
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	   public String welcomePage(Model model) {
@@ -33,9 +40,37 @@ public class LoginController {
 	 
 	   @RequestMapping(value = "/logoutSuccessful", method = RequestMethod.GET)
 	   public String logoutSuccessfulPage(Model model) {	       
-	       return "redirect:/";
+	       return "logoutSuccessfulPage";
 	   }
 	 
+	   @RequestMapping("/newaccount")
+	   public String showNewAccount(Model model ) {
+	       model.addAttribute("userInfo", new UserInfo()); 
+	       return "signupPage";
+	   }
+	   
+	   @RequestMapping(value="/createaccount", method = RequestMethod.POST)
+	   public String createAccount(Model model,@Validated UserInfo userInfo ,BindingResult result) {	   
+		   if(result.hasErrors()) {
+			   return "signupPage";
+		   }
+		   
+		   if(userInfoDao.exists(userInfo.getUsername())) {
+			   result.rejectValue("username", "DuplicateKey.userInfo.username", "This username already exisits");
+			   return "signupPage";
+		   }
+		   		   		   
+		   try {
+			   userInfoDao.insertUserInfo(userInfo);
+		   } catch (Exception e) {
+			   // TODO: handle exception
+			   result.rejectValue("username", "DuplicateKey.userInfo.username", "This username already exisits");
+			   return "signupPage";
+		   }
+		   
+	       return "accountcreated";
+	   }
+	   
 	   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
 	   public String userInfo(Model model, Principal principal) {
 	 

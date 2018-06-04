@@ -59,6 +59,7 @@
  
 <c:set var="url" value ="/BarcodeGenerateV2/WEB-INF/pages/home.jsp" />
 <c:set var="loginUrl" value ="/BarcodeGenerateV2/WEB-INF/pages/loginPage.jsp" />
+<c:set var="signupUrl" value ="/BarcodeGenerateV2/WEB-INF/pages/signupPage.jsp" />
 <c:set var= "currentUrl" value= "${pageContext.request.requestURI}"/>
 
 <%--  <c:out value=" ${ currentUrl}"/> --%>
@@ -85,7 +86,11 @@
   </c:if>
   
   <c:if test="${pageContext.request.userPrincipal.name == null}">     
-     <a href="${pageContext.request.contextPath}/signup">Sign up</a>     
+     <a 
+     	<c:if test = "${currentUrl == signupUrl}">
+         class='active'
+      	</c:if>
+     href="${pageContext.request.contextPath}/newaccount">Sign up</a>     
   </c:if>
   
   <c:if test="${pageContext.request.userPrincipal.name != null}">

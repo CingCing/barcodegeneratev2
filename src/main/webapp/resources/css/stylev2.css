@@ -63,7 +63,7 @@ body {
 }
 .firstColumn {
   width: 150px;
-  text-align: right;
+  text-align: left;
   vertical-align: top;
   padding: 4px 0 4px 0;
   color: #5e6b75;
@@ -163,4 +163,16 @@ body {
 }
 .container {
     position: relative;
+}
+.btn {
+    background-color: #4eb8dd;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btn:hover {
+    background-color: RoyalBlue;
 }

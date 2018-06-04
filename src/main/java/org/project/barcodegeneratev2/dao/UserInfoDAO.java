@@ -21,6 +21,26 @@ public class UserInfoDAO {
 	public UserInfoDAO() {
 	 
 	}
+	
+	public void insertUserInfo(UserInfo userInfo) {
+		String username = userInfo.getUsername();
+		String password = userInfo.getPassword();
+		User user = new User();
+//		UserRole userRole = new UserRole();
+		
+//		boolean isNew = false;
+		user.setUsername(username);
+		user.setPassword(password);
+		
+//		userRole.setRoleId("");
+//		userRole.setUser(user);
+//		userRole.setUserRole("USER");
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(user); //insert into table
+//		session.persist(userRole);
+	};
+	
 	//Tìm user trong csdl
 	public UserInfo findUserInfo(String userName) {
 		String sql="Select new " + UserInfo.class.getName() + " (u.username,u.password) " + "from " 
@@ -45,4 +65,10 @@ public class UserInfoDAO {
  
         return roles;
     }
+
+	public boolean exists(String username) {		
+		
+		return findUserInfo(username) != null;
+	}
+	
 }
