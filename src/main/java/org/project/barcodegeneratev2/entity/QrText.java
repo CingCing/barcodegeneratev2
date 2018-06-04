@@ -17,7 +17,7 @@ public class QrText implements Serializable {
 	private String context;
 	
 	@Id
-	@Column(name = "username", length = 50, nullable = true)
+	@Column(name = "username", nullable = true)
 	public String getUsername() {
 		return username;
 	}
@@ -25,7 +25,7 @@ public class QrText implements Serializable {
 		this.username = username;
 	}
 	
-	@Column(name = "context", length = 255 , nullable = true)
+	@Column(name = "context", nullable = true)
 	public String getContext() {
 		return context;
 	}

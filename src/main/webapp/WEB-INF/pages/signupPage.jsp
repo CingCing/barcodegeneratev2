@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
 
 <body>
 
-	<form name='f'	action="${pageContext.request.contextPath}/j_spring_security_check"	method='POST'>
+	<sf:form name='f' action="${pageContext.request.contextPath}/createaccount" commandName="userInfo"	method='POST'>
 		<div class="svgContainer">
 			<div>
 				<svg class="mySVG" xmlns="http://www.w3.org/2000/svg"
@@ -190,29 +191,28 @@
 		</div>
 
 		<div class="inputGroup inputGroup1">
-			<label for="loginEmail" id="loginEmailLabel">Username</label> 
-			<input type="text" id="loginEmail" name="username" required="required" />
-			<p class="helper helper1">email@domain.com</p>
+			<label for="loginEmail" id="loginEmailLabel">Email</label> 
+			<sf:input path="username" type="email" id="loginEmail" name="username" required="required" placeholder="email@domail.com"/>
+			<!-- <p class="helper helper1">email@domain.com</p> -->
+			<sf:errors path="username" >
+         		<label style="color:red;">          
+                	      This username already exists
+         		</label>
+    		</sf:errors>
 		</div>
 		<div class="inputGroup inputGroup2">
 			<label for="loginPassword" id="loginPasswordLabel">Password</label> 
-			<input type="password" id="loginPassword" name="password" required="required" /> 
+			<sf:input path="password" type="password" id="loginPassword" name="password" required="required" /> 
 			<label	id="showPasswordToggle" for="showPasswordCheck">Show <input	id="showPasswordCheck" type="checkbox" />
 				<div class="indicator"></div>
-			</label>
-			
-			<c:if test="${param.error == 'true'}">
-         		<label style="color:red;">          
-                	Incorrect username or password              
-         		</label>
-    		</c:if>
+			</label>					
     		
 		</div>
 		
 		<div class="inputGroup inputGroup3">
-			<button id="login">Log in</button>
+			<button id="login">Sign Up</button>
 		</div>
-	</form>
+	</sf:form>
 	
 	<script	src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js'></script>
 	<script src="resources/js/index.js"></script>

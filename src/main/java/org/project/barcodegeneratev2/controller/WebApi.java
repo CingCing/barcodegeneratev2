@@ -23,6 +23,9 @@ import com.google.zxing.WriterException;
 @Controller
 public class WebApi extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private int width = 250;
+	private int height = 250;
+	private char err = 'L';
 	QrTextInfo qrTextInfo = new QrTextInfo();
 	
 	@Autowired
@@ -31,15 +34,45 @@ public class WebApi extends HttpServlet {
 	@RequestMapping(value = { "/generator" }, method = RequestMethod.GET)	
 	protected void doGet(HttpServletRequest request, HttpServletResponse respone) throws ServletException, IOException{
 		String context = request.getParameter("context");
+		String type = request.getParameter("type");
+		String size = request.getParameter("size");
+		String level = request.getParameter("level");		
+		String username = request.getParameter("author");
+		
+		if(username == null || username=="") {
+			username = "excel";
+		}
+		if(type == null) {
+			type = "qr";
+		}
+		
+		if(size != null && size != "") {
+			String s[] = size.split("x");
+			if(s.length == 2 && s[0] != "" && s[1] != "") {
+				width = Integer.parseInt(s[0]);
+				height = Integer.parseInt(s[1]);
+			}
+		}
+		
+		if(level != null && level != "") {			
+			err = level.toUpperCase().charAt(0);			
+		}
+		
 		try {
-			byte[] out = QrcodeService.getQRCodeImage(context, 250, 250);
+			byte[] out;
+			if(type == "128" || type.equals("128")) {				
+				out = QrcodeService.generateCode128(context, width, height);
+			}else {				
+				out = QrcodeService.generateQRCode(context, width, height, err);
+			}
+			
 			qrTextInfo.setContext(context);	
 			
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String username = "guest";
-			if(auth.getName() != null) {			
-				username = auth.getName();
-			}		 
+//			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			
+//			if(auth.getName() != null) {			
+//				username = auth.getName();
+//			}		 
 			qrTextInfo.setUsername(username);
 			
 			this.qrTextDAO.insertQrText(qrTextInfo);

@@ -2,4 +2,7 @@ eclipse.preferences.version=1
 encoding//src/main/java/org/project/barcodegeneratev2/config/ApplicationContextConfig.java=UTF-8
 encoding//src/main/java/org/project/barcodegeneratev2/config/WebMvcConfig.java=UTF-8
 encoding//src/main/java/org/project/barcodegeneratev2/config/WebSecurityConfig.java=UTF-8
+encoding//src/main/webapp/WEB-INF/pages/accountcreated.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/pages/logoutSuccessfulPage.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/pages/signupPage.jsp=UTF-8
 encoding/<project>=UTF-8

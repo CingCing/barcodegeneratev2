@@ -41,7 +41,7 @@ public class MyUserDetailsService implements UserDetailsService{
 			}
 		}    
 		
-		UserDetails userDetails =(UserDetails) new User(userInfo.getUserName(), userInfo.getPassword(), grantList);
+		UserDetails userDetails =(UserDetails) new User(userInfo.getUsername(), userInfo.getPassword(), grantList);
 		return userDetails;
 	}
 	
