@@ -4,7 +4,6 @@
 <html>
 <head>
 <meta http-equiv="Refresh" content="3; url=${pageContext.request.contextPath}/">
-<title>Redirecting...</title>
 <style>
 .fullscreenDiv {
     background-color: #e8e8e8;
@@ -23,14 +22,37 @@
     left: 40%;
     margin-left: -50px; /* margin is -0.5 * dimension */
     margin-top: -25px; 
-}​
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
+<title>Redirecting...</title>
+
 </head>
 <body>
 <div class='fullscreenDiv'>
     	<div class="center">
     		<h1>Your account have been created</h1>
 			<h3>Redirecting to home page ...</h3>
+			<div class="loader" style="margin-left: 70px;"></div>
     	</div>
 </div>
 

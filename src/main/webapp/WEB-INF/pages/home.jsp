@@ -138,7 +138,7 @@
                                 </colgroup>
                                 <tbody>
                                 <tr >
-									<td class="firstColumn">Data color</td>		
+									<td class="firstColumn">Data color </td>		
 									<td class="secondColumn"><input type="color" name="sDataColor" value='${sDataColor}'></td>									
 								</tr>
 								 <tr >
@@ -147,8 +147,12 @@
 									<c:if test="${not empty sQuiteZoneColor}"><td class="secondColumn"><input type="color" name="sQuiteZoneColor" value='${sQuiteZoneColor}'></td>	</c:if>								
 								</tr>
 								<tr >
-									<td class="firstColumn">Upload with logo </td>
-									<td class="secondColumn"><input type="file" name="fileData" path="fileData" /></td>
+									<td class="firstColumn">Upload with logo <div class="tooltip"><i class="fa fa-question-circle-o" style="color:green"></i>  
+										<span class="tooltiptext">Your logo will be automatically centered and optimally re-sized </span>
+										</div
+									></td>
+									
+									<td class="secondColumn"><input type="file" name="fileData" path="fileData" /> </td>
 								</tr>
                                 </tbody>
                             </table>
@@ -217,13 +221,17 @@
                     <tr>
                         <td align="left" style="vertical-align: top;">                        	
                             <div id="imageresult">
-                                <div id="innerresult">
+                                <div id="innerresult" style="position: relative;">
+                                	   
                                 	<!-- <c:if test="${empty output }">
 										<img src="resources/image/helloworld.png" class="gwt-Image">
 									</c:if>  -->
 									<c:if test="${not empty output }">
 										<img src="data:image/png;base64,${output }" class="gwt-Image">
 									</c:if>                                
+									<c:if test="${pageContext.request.userPrincipal.name == null && not empty output}">
+									<a href="${pageContext.request.contextPath}/login" class="btn-radius" style="text-decoration: none;position: absolute; top: -30px; left: 300px;" >With Logo? </a>
+									</c:if> 
                                 </div>
                             </div>
                             
@@ -232,7 +240,7 @@
                     
                     <c:if test="${not empty output }">
                     <tr>
-                        <td align="left" style="vertical-align: top;">
+                        <td align="left" style="vertical-align: top; text-align: center; padding-top:20px">
                             <div class="gwt-HTML" id="downloadText" aria-hidden="true" >
                             <a href="data:image/png;base64,${output }" id="downloadlink" download="BarcodeImage.png" class="btn" style="text-decoration: none; padding-left: 20px; padding-right: 20px;"><i class="fa fa-download" style="
     padding-right: 10px;
