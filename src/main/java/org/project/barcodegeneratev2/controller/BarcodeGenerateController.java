@@ -1,6 +1,7 @@
 package org.project.barcodegeneratev2.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Base64;
 
 import javax.servlet.ServletException;
@@ -41,14 +42,47 @@ public class BarcodeGenerateController extends HttpServlet {
 //	@Autowired
 //	private QrTextValidator qrTextValidator;
 	
-	@RequestMapping(value = { "/", "/welcome" }, method = RequestMethod.POST)	
+	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.POST)	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, @ModelAttribute QrTextInfo qrtextForm) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String context = request.getParameter("qrtext");
-		qrTextInfo.setContext(context);	
+		String context = "";
+		String DataColor = "0xFF000000";
+		String QuiteZoneColor = "0xFFFFFFFF";
 		
-//		String Logo = "./src/main/webapp/resources/image/cmonbruh.png";
+		String code128 = request.getParameter("code128");
+		String url = request.getParameter("url");
+		String phone = request.getParameter("phone");
+		String msg = request.getParameter("msg");
+		String text = request.getParameter("text");
+		String email = request.getParameter("email");		
+		String dataType = request.getParameter("dataType");
+		String errorCorrection = request.getParameter("errorCorrection");
+		String barcodeType = request.getParameter("barcodeType");
+		String size = request.getParameter("size");
+		String sDataColor = request.getParameter("sDataColor");
+		String sQuiteZoneColor = request.getParameter("sQuiteZoneColor");
+		
+		int sizeConvert = Integer.parseInt(size); //convert string to int
+		
+		if(code128=="" || code128 == null) {			
+			switch(dataType) { //format QR Code date type
+			case "1": context = "mailto:" + email; break; //email
+			case "2": context = "tel:" + phone; break; //phone
+			case "3": context = "smsto:" + phone + ":" + msg; break; //sms
+			case "4": context = url; break; //url
+			default: context = text; break;
+			}
+		}
+		
+		if(sDataColor != "" && sDataColor != null) {
+			DataColor = convertColor(sDataColor);			
+		}
+		if(sQuiteZoneColor != "" && sQuiteZoneColor != null) {
+			QuiteZoneColor = convertColor(sQuiteZoneColor);			
+		}
+		
+		qrTextInfo.setContext(context);	
 
+		//get author name
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = "guest";
 		if(auth.getName() != null) {			
@@ -56,24 +90,44 @@ public class BarcodeGenerateController extends HttpServlet {
 		}		 
 		qrTextInfo.setUsername(username);
 		
-		try {			
-			byte[] out = QrcodeService.getQRCodeImage(context, 250,250);
+		try {		
+			byte[] out;
 			
-			if(qrtextForm.getFileData() != null) {
-				MultipartFile file = qrtextForm.getFileData();
-				if(!file.isEmpty()) {
-					byte[] imageByte = file.getBytes();
-					out = QrcodeService.generateQRCodeImageOverlayWebData(context, 250, 250, imageByte);
-				}				
-			}
+			if((barcodeType == "1d" || barcodeType.equals("1d")) && !barcodeType.isEmpty()) {	 //generate Code 128
+				out = QrcodeService.generateCode128(code128, sizeConvert, sizeConvert);
+				request.setAttribute("code128", code128);
+			}else {																			  	//generate QR Code
+				char level = errorCorrection.toUpperCase().charAt(0); 							// convert string to char uppercase
+				out = QrcodeService.generateQRCode(context, sizeConvert, sizeConvert, level, DataColor, QuiteZoneColor);	//generate QR Code without image inside
+				if(qrtextForm.getFileData() != null) {
+					MultipartFile file = qrtextForm.getFileData();
+					if(!file.isEmpty()) {
+						byte[] imageByte = file.getBytes();
+						out = QrcodeService.generateQRCodeImageOverlayWebData(context, sizeConvert, sizeConvert, imageByte, DataColor, QuiteZoneColor);	//generate QR Code with image inside
+					}				
+				}
+				
+				this.qrTextDAO.insertQrText(qrTextInfo);										//save data to database
+				request.setAttribute("input", context);											//set data to jsp page														
+				request.setAttribute("dataType", dataType);										
+				request.setAttribute("errorCorrection", errorCorrection);
+				request.setAttribute("url", url);
+				request.setAttribute("phone", phone);
+				request.setAttribute("msg", msg);
+				request.setAttribute("text", text);
+				request.setAttribute("email", email);
+				request.setAttribute("sDataColor", sDataColor);
+				request.setAttribute("sQuiteZoneColor", sQuiteZoneColor);				
+			}				
 			
-			this.qrTextDAO.insertQrText(qrTextInfo);
+			byte[] encodeBase64 = Base64.getEncoder().encode(out);								//encode data to base64
+			String base64DataString = new String(encodeBase64 , "UTF-8");						//convert database64 to String
 			
-			byte[] encodeBase64 = Base64.getEncoder().encode(out);
-			String base64DataString = new String(encodeBase64 , "UTF-8");
-			request.setAttribute("output", base64DataString);
-			request.setAttribute("input", context);
-			request.getRequestDispatcher("WEB-INF/pages/welcomePage.jsp").forward(request, response);
+			request.setAttribute("output", base64DataString);									//set data to jsp page	
+			request.setAttribute("size", size);		
+			request.setAttribute("barcodeType", barcodeType);
+			request.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(request, response);	//send data to jsp page
+			
 		} catch (WriterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,4 +139,9 @@ public class BarcodeGenerateController extends HttpServlet {
 		doGet(request, response);
 	}
 	
+	private String convertColor(String sColor) {
+		sColor = sColor.substring(1);
+		sColor = "0xFF" + sColor;
+		return sColor;
+	}
 }

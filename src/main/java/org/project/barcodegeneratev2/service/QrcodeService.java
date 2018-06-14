@@ -24,6 +24,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.Code128Writer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
@@ -38,6 +39,54 @@ public class QrcodeService {
 	    return pngData;
 	}
 	
+	public static byte[] generateCode128(String text, int width, int height) throws WriterException, IOException {
+		Code128Writer code128Writer = new Code128Writer();
+	    BitMatrix bitMatrix = code128Writer.encode(text, BarcodeFormat.CODE_128, width, height);
+	    
+	    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+	    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+	    byte[] pngData = pngOutputStream.toByteArray(); 
+	    return pngData;
+	}
+	
+	public static byte[] generateQRCode(String text, int width, int height, char level) throws WriterException, IOException {
+		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
+		
+		switch(level) {
+		case 'L': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L); break;
+		case 'M': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); break;
+		case 'Q': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q); break;
+		case 'H': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); break;
+		}		
+		
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();	    
+	    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
+	    
+	    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+	    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+	    byte[] pngData = pngOutputStream.toByteArray(); 
+	    return pngData;
+	}
+	
+	public static byte[] generateQRCode(String text, int width, int height, char level, String dataColor, String quiteZoneColor) throws WriterException, IOException {
+		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
+		
+		switch(level) {
+		case 'L': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L); break;
+		case 'M': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); break;
+		case 'Q': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q); break;
+		case 'H': hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); break;
+		}		
+		
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();	    
+	    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
+	    
+	    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+	    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream, getMatrixConfig(dataColor, quiteZoneColor));
+	    byte[] pngData = pngOutputStream.toByteArray(); 
+	    return pngData;
+	}
+	
 	public static void generateQRCodeImage(String text, int width, int height, String filePath)
             throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -47,7 +96,7 @@ public class QrcodeService {
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
     }
 	
-	public static void generateQRCodeImageOverlay(String text, int width, int height, String filePath, String Logo)
+	public static void generateQRCodeImageOverlay(String text, int width, int height, String filePath, String Logo, String dataColor, String quiteZoneColor)
             throws WriterException, IOException {
 		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);		
@@ -58,7 +107,7 @@ public class QrcodeService {
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
         
         // Load QR image
-        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
+        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig(dataColor, quiteZoneColor));
         
         // Load logo image
         BufferedImage overly = getOverlay(Logo);       
@@ -89,7 +138,7 @@ public class QrcodeService {
 //        return pngData;
     }
 	
-	public static byte[] generateQRCodeImageOverlayWebData(String text, int width, int height, byte[] imageByte)
+	public static byte[] generateQRCodeImageOverlayWebData(String text, int width, int height, byte[] imageByte, String dataColor, String quiteZoneColor)
             throws WriterException, IOException {
 		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);		
@@ -100,11 +149,11 @@ public class QrcodeService {
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
         
         // Load QR image
-        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
+        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig(dataColor, quiteZoneColor));
         
         // Load logo image
         BufferedImage overly = getOverlayByte(imageByte);      
-        //resize image if its big
+        //resize image if its big than 100px
         if(overly.getHeight() > 100 || overly.getWidth() >100) {
         	overly = resizeImage(overly);
         }
@@ -128,9 +177,7 @@ public class QrcodeService {
         // Write combined image as PNG to OutputStream
         ImageIO.write(combined, "png", pngOutputStream);
         
-        byte[] pngData = pngOutputStream.toByteArray(); 
-        //store image in file
-//        Files.copy(new ByteArrayInputStream(pngData), Paths.get(filePath + text + ".png"), StandardCopyOption.REPLACE_EXISTING);
+        byte[] pngData = pngOutputStream.toByteArray();        
         
         return pngData;
     }
@@ -153,10 +200,14 @@ public class QrcodeService {
 			return resizedImage;
 	 }
 	
-	private static MatrixToImageConfig getMatrixConfig() {
+	private static MatrixToImageConfig getMatrixConfig(String sDataColor, String sQuiteZoneColor) {		
         // ARGB Colors
+		long c = Long.decode(sDataColor);
+		long c1 = Long.decode(sQuiteZoneColor);		
+	    int dataColor = (int) c;
+	    int quiteZoneColor = (int) c1;
         // Check Colors ENUM
-        return new MatrixToImageConfig(QrcodeService.Colors.BLACK.getArgb(), QrcodeService.Colors.WHITE.getArgb());
+        return new MatrixToImageConfig(dataColor, quiteZoneColor);
     }
 	
 	public enum Colors {
